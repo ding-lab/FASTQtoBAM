@@ -18,9 +18,11 @@
 * samtools
 * reference genome
 * Note: if work in Katmai, tools have been installed and defined in the main script.
-```git clone https://github.com/ding-lab/FASTQtoBAM.git
+```sh
+git clone https://github.com/ding-lab/FASTQtoBAM.git
 ```
-```cd FASTQtoBAM
+```sh
+cd FASTQtoBAM
 ```
 
 ## Steps
