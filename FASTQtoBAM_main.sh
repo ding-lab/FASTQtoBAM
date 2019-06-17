@@ -52,7 +52,7 @@ if [$Lane2_1 = ""]; then
 	## Step 4: Merging (if no lane 2, no need to do merging)
 
 	## Step 5: Removing duplicates
-	java -jar -Djava.io.tmpdir=${output}/temp ${picard} MarkDuplicates I=${output}/${sample_ID}.sorted.bam O=${output}/${sample_ID}.sorted.marked_duplicates.bam M=${output}/marked_dup_metrics.txt REMOVE_DUPLICATES=true VALIDATION_STRINGENCY=STRICT
+	java -jar -Djava.io.tmpdir=${output}/temp ${picard} AddOrReplaceReadGroups MarkDuplicates I=${output}/${sample_ID}.sorted.bam O=${output}/${sample_ID}.sorted.marked_duplicates.bam M=${output}/marked_dup_metrics.txt REMOVE_DUPLICATES=true VALIDATION_STRINGENCY=STRICT
 
 	## Step 6: Indexing
 	${samtools} index ${output}/${sample_ID}.sorted.marked_duplicates.bam
