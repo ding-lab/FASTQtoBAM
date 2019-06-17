@@ -13,10 +13,11 @@
 ## Installation
 
 ### Prerequisition
-* flexbar
-* bwa
-* samtools
-* reference genome
+* Flexbar
+* BWA
+* Samtools
+* Picard
+* Reference genome
 * Note: if work in Katmai, tools have been installed and defined in the main script.
 ```sh
 git clone https://github.com/ding-lab/FASTQtoBAM.git
@@ -35,7 +36,7 @@ cd FASTQtoBAM
 
 * Merging (samtools): merge the intermediate BAM files if there are two lanes from the sample (will be skipped if there is only one lane).
 
-* Removing duplicates (samtools): remove duplicates and generate the final BAM files.
+* Removing duplicates (Picard): remove duplicates and generate the final BAM files.
 
 * Indexing (samtools): create index.
 
