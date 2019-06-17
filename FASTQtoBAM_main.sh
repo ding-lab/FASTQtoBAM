@@ -3,7 +3,7 @@
 #######################################################################################################
 ################################################# Y Li ################################################
 ######################## Date: 08/15/2018 (Initiation); 06/17/2019 (Revision) #########################
-######################## FASTQ to BAM  pipeline on Katmai (WES, WGS, 10X etc) #########################
+################ FASTQ to BAM  pipeline on Katmai (regular WES, WGS, 10X WES/WGS etc) #################
 #######################################################################################################
 
 # This script can be used to generate BAMs based on the corresponding FASTQ files.  There are multiple steps including trimming, alignment, sorting, merging, removing duplicates and indexing the BAMs. Users can specific the input and output path (script can be saved in anywhere to run).
@@ -40,6 +40,7 @@ else
 	## Step 2: mapping: hg38
 	/diskmnt/Projects/Users/yize.li/Tools/conda_yize/bin/bwa mem -t 8 -M ${reference} ${output}/temp/${Lane2_1}.fastq.gz ${output}/temp/${Lane2_2}.fastq.gz | /diskmnt/Projects/Users/yize.li/Tools/conda_yize/bin/samtools view -Sb - > ${output}/${Lane2_BAM}.bam
 fi
+
 
 if [$Lane2_1 = ""]; then
 	## Step 3: Sorting
