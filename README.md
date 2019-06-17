@@ -6,7 +6,21 @@
 
 * There are multiple steps including trimming, alignment, sorting, merging, removing duplicates and indexing the BAMs. Users can specific the input and output path.
 
+* Source code is freely available at https://github.com/ding-lab/FASTQtoBAM.git, distributed under the GNU GPLv3 license, implemented in R, Python, Perl, and Bash, and supported on Unix/Linux/OS X operating systems.
+
 * Run the job as nohup bash FASTQtoBAM_main.sh 1>sample_ID.err 2>sample_ID.log &
+
+## Installation
+
+### Prerequisition
+* flexbar
+* bwa
+* samtools
+* reference genome
+* Note: if work in Katmai, tools have been installed and defined in the main script.
+```git clone https://github.com/ding-lab/FASTQtoBAM.git
+cd FASTQtoBAM
+```
 
 ## Steps
 
