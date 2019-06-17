@@ -18,3 +18,4 @@ reference="" # The reference used for alignment
 flexbar="/diskmnt/Projects/Users/yize.li/Tools/conda_yize/bin/flexbar"
 bwa="/diskmnt/Projects/Users/yize.li/Tools/conda_yize/bin/bwa"
 samtools="/diskmnt/Projects/Users/yize.li/Tools/conda_yize/bin/samtools"
+picard="/diskmnt/Projects/Users/yize.li/Tools/picard.jar"
