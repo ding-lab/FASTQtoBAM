@@ -2,7 +2,7 @@
 
 ## Overview
 
-* This pipeline can generate BAMs from the corresponding FASTQ files (1 lane or 2 lanes). It was originally developed for generating the MMY 10X WGS BAMs (hg38) in Katmai. 
+* This pipeline can generate regular WES, WGS, 10x WES/WGS BAMs from the corresponding FASTQ files (1 lane or 2 lanes). It was originally developed for generating the MMY 10X WGS BAMs (hg38) in Katmai. 
 
 * There are multiple steps including trimming, alignment, sorting, merging, removing duplicates and indexing the BAMs. Users can specific the input and output path.
 
