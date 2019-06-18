@@ -6,7 +6,7 @@
 
 * There are multiple steps including trimming, alignment, sorting, merging, removing duplicates and indexing the BAMs. Users can specific the input and output path.
 
-* Source code is freely available at https://github.com/ding-lab/FASTQtoBAM.git, distributed under the GNU GPLv3 license, implemented in R, Python, Perl, and Bash, and supported on Unix/Linux/OS X operating systems.
+* Source code is freely available at https://github.com/ding-lab/FASTQtoBAM.git, distributed under the GNU GPLv3 license, implemented in Bash, and supported on Unix/Linux/OS X operating systems.
 
 * Run the job as nohup bash FASTQtoBAM_main.sh 1>sample_ID.err 2>sample_ID.log &
 
@@ -30,7 +30,7 @@ cd FASTQtoBAM
 
 * Trimming (flexbar): barcode and adapter removal.
 
-* Read mapping (bwa & samtools): align the reads to the reference genome (user can define the reference (hg19/hg38) in the config.sh).
+* Read mapping (bwa & samtools): add read group information and align the reads to the reference genome (user can define the reference (hg19/hg38) in the config.sh).
 
 * Sorting (samtools): sort the intermediate BAM files.
 
