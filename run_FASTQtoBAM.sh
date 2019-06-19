@@ -8,11 +8,10 @@
 
 # This script can be used to generate BAMs based on the corresponding FASTQ files.  There are multiple steps including trimming, alignment, sorting, merging, removing duplicates and indexing the BAMs. Users can specific the input and output path (script can be saved in anywhere to run).
 # E.g. Here it is used to generate the MMY 10X WGS BAMs (hg38) in Katmai
-# Run the job as nohup bash submit_FASTQtoBAM.sh 1>sampleID.err 2>sampleID.log &
+# Run the job as nohup bash FASTQtoBAM_main.sh 1>sampleID.err 2>sampleID.log &
 
 #######################################################################################################
 
-# Arguments parsed from submitting submit_FASTQtoBAM.sh
 while getopts ":n:i:o:a:b:c:d:" opt; do
   case $opt in
     n) # value argument
@@ -55,7 +54,7 @@ while getopts ":n:i:o:a:b:c:d:" opt; do
 done
 
 # Argumments set by the users in config.sh
-source config.sh #lane, reference, installation paths of tools
+source config.sh
 
 # Create a temp folder which will be used in Step 5 (Picard)
 if [ ! -d "${output}/temp" ]; then
@@ -75,7 +74,7 @@ if [ ${lane} = 1 ]; then
                 SM=$(echo $R1 | cut -d"_" -f1)                                          ##sample ID
                 LB=$(echo $R1 | cut -d"_" -f1,2)                                        ##library ID
                 PL="Illumina"                                                           ##platform (e.g. illumina, solid)
-                RGID=$(zcat $R1 | head -n1 | sed 's/:/_/g' |cut -d "_" -f1,2,3,4)       ##read group identifier
+                RGID=$(zcat ${output}/temp/$R1 | head -n1 | sed 's/:/_/g' |cut -d "_" -f1,2,3,4)       ##read group identifier
                 PU=$RGID.$LB                                                            ##Platform Unit
                 echo -e "@RG\tID:$RGID\tSM:$SM\tPL:$PL\tLB:$LB\tPU:$PU"
 
@@ -162,5 +161,5 @@ else
 fi
 
 ## Step 7: Intermediate files removal
-rm *.sorted.bam
-rm -r ${output}/temp
+#rm *.sorted.bam
+#rm -r ${output}/temp
