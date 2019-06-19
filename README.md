@@ -8,7 +8,7 @@
 
 * Source code is freely available at https://github.com/ding-lab/FASTQtoBAM.git, distributed under the GNU GPLv3 license, implemented in Bash, and supported on Unix/Linux/OS X operating systems.
 
-* Run the job as nohup bash FASTQtoBAM_main.sh 1>sample_ID.err 2>sample_ID.log &
+* Run the job as nohup bash submit_FASTQtoBAM.sh 1>sample_ID.err 2>sample_ID.log &
 
 ## Installation
 
@@ -18,12 +18,20 @@
 * Samtools
 * Picard
 * Reference genome
-* Note: if work in Katmai, tools have been installed and defined in the main script.
+### Download FASTQtoBAM
 ```sh
 git clone https://github.com/ding-lab/FASTQtoBAM.git
 ```
+### Get in the working directory
 ```sh
 cd FASTQtoBAM
+```
+
+### Update input data file datamap, and the the configuration file config.sh if needed (if work in Katmai, tools have been installed and defined in the configuration file config.sh).
+
+### Run FASTQtoBAM
+```sh
+nohup bash FASTQtoBAM_main.sh 1>sample_ID.err 2>sample_ID.log &
 ```
 
 ## Steps
