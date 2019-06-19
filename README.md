@@ -27,7 +27,10 @@ git clone https://github.com/ding-lab/FASTQtoBAM.git
 cd FASTQtoBAM
 ```
 
-### Update input data file datamap, and the the configuration file config.sh if needed (if work in Katmai, tools have been installed and defined in the configuration file config.sh).
+### Configuration
+```sh
+Update input data file datamap, and the the configuration file config.sh if needed (if work in Katmai, tools have been installed and defined in the configuration file config.sh).
+```
 
 ### Run FASTQtoBAM
 ```sh
