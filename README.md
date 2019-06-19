@@ -4,7 +4,9 @@
 
 * This pipeline can generate regular WES, WGS, 10x WES/WGS BAMs from the corresponding FASTQ files (1 lane or 2 lanes). It was originally developed for generating the MMY 10X WGS BAMs (hg38) in Katmai. 
 
-* There are multiple steps including trimming, alignment, sorting, merging, removing duplicates and indexing the BAMs. Users can specific the input and output path.
+* FASTQtoBAM can run through multiple samples in a systematic way. Users can define the sample informtion, input and output paths in datamap. 
+
+* There are multiple steps including trimming, mapping, sorting, merging (if two lanes), removing duplicates and indexing the BAMs.
 
 * Source code is freely available at https://github.com/ding-lab/FASTQtoBAM.git, distributed under the GNU GPLv3 license, implemented in Bash, and supported on Unix/Linux/OS X operating systems.
 
