@@ -64,102 +64,129 @@ fi
 # Pre-alignment steps
 ## Lane 1
 if [ ${lane} = 1 ]; then
-	## Step 1: trimming: barcode and adapter removal
-	echo "Note: There is only one lane for this sample."
-	${flexbar} -u 100 -n 8 -r ${input}/${Lane1_1} -t ${output}/temp/${Lane1_1} -x 23 -z GZ
-	ln -s ${input}/${Lane1_2} ${output}/temp/${Lane1_2}.fastq.gz
-        ## Step 2: mapping: hg38
-        ### Add Read group information: Read group information is typically added during this step, but can also be added or modified after mapping using Picard AddOrReplaceReadGroups.
-        for R1 in ${Lane1_1}; do
-                SM=$(echo $R1 | cut -d"_" -f1)                                          ##sample ID
-                LB=$(echo $R1 | cut -d"_" -f1,2)                                        ##library ID
-                PL="Illumina"                                                           ##platform (e.g. illumina, solid)
-                RGID=$(zcat ${output}/temp/$R1 | head -n1 | sed 's/:/_/g' |cut -d "_" -f1,2,3,4)       ##read group identifier
-                PU=$RGID.$LB                                                            ##Platform Unit
-                echo -e "@RG\tID:$RGID\tSM:$SM\tPL:$PL\tLB:$LB\tPU:$PU"
+  echo "Note: There is only one lane for this sample."
+  ## Step 1: trimming: barcode and adapter removal
+  Lane1_1_name=$(echo $Lane1_1 | cut -d"." -f1)
+  ${flexbar} -u 100 -n 8 -r ${input}/${Lane1_1} -t ${output}/temp/${Lane1_1_name} -x 23 -z GZ
+  ln -s ${input}/${Lane1_2} ${output}/temp/${Lane1_2}
 
-                R2=$(echo $R1 | sed 's/_R1_/_R2_/')
-                echo $R1 $R2
-                ### Mapping
-                ${bwa} mem -t 8 -M -R "@RG\tID:$RGID\tSM:$SM\tPL:$PL\tLB:$LB\tPU:$PU" ${reference} ${output}/temp/$R1 ${output}/temp/$R2 | ${samtools} view -Sb - > ${output}/${Lane1_BAM}.bam
-        done   
+  ## Step 2: mapping: hg38
+  ### Add Read group information: Read group information is typically added during this step, but can also be added or modified after mapping using Picard AddOrReplaceReadGroups.
+  for R1 in ${Lane1_1}; do
+          SM=$(echo $R1 | cut -d"_" -f1)                                          ##sample ID
+          LB=$(echo $R1 | cut -d"_" -f1,2)                                        ##library ID
+          PL="Illumina"                                                           ##platform (e.g. illumina, solid)
+          RGID=$(zcat ${output}/temp/${R1} | head -n1 | sed 's/:/_/g' |cut -d "_" -f1,2,3,4)       ##read group identifier
+          PU=$RGID.$LB                                                            ##Platform Unit
+          echo -e "@RG\tID:$RGID\tSM:$SM\tPL:$PL\tLB:$LB\tPU:$PU"
+
+          R2=$(echo $R1 | sed 's/_R1_/_R2_/')
+          echo $R1 $R2
+
+          ### Mapping
+          ${bwa} mem -t 8 -M -R "@RG\tID:$RGID\tSM:$SM\tPL:$PL\tLB:$LB\tPU:$PU" ${reference} ${output}/temp/${R1} ${output}/temp/${R2} | ${samtools} view -Sb - > ${output}/temp/${LB}.bam
+  done
+
 else
         if [ ${lane} = 2 ]; then
                 echo "Note: There are two lanes for this sample. Merging step (step 4) will be processed."
         else
                 echo "Error: Wrong number of lanes (at least one lane). Please double check."
-	fi
+  fi
 fi
 
 ## Lane 2 (if no lane 2, print out the note)
 if [ ${lane} = 2 ]; then
-	echo "Note: There are two lanes for this sample. Merging step (step 4) will be processed."
-	## Step 1: trimming: barcode and adapter removal
-	${flexbar} -u 100 -n 8 -r ${input}/${Lane2_1} -t ${output}/temp/${Lane2_1} -x 23 -z GZ
-	ln -s ${input}/${Lane2_2} ${output}/temp/${Lane2_2}.fastq.gz
+  echo "Note: There are two lanes for this sample. Merging step (step 4) will be processed."
+  ## Step 1: trimming: barcode and adapter removal
+  Lane1_1_name=$(echo $Lane1_1 | cut -d"." -f1)
+  ${flexbar} -u 100 -n 8 -r ${input}/${Lane1_1} -t ${output}/temp/${Lane1_1_name} -x 23 -z GZ
+  ln -s ${input}/${Lane1_2} ${output}/temp/${Lane1_2}
 
-        ## Step 2: mapping: hg38
-        ### Add Read group information
-        for R1 in ${Lane1_1}; do
-                SM=$(echo $R1 | cut -d"_" -f1)                                          ##sample ID
-                LB=$(echo $R1 | cut -d"_" -f1,2)                                        ##library ID
-                PL="Illumina"                                                           ##platform (e.g. illumina, solid)
-                RGID=$(zcat $R1 | head -n1 | sed 's/:/_/g' |cut -d "_" -f1,2,3,4)       ##read group identifier
-                PU=$RGID.$LB                                                            ##Platform Unit
-                echo -e "@RG\tID:$RGID\tSM:$SM\tPL:$PL\tLB:$LB\tPU:$PU"
+  Lane2_1_name=$(echo $Lane2_1 | cut -d"." -f1)
+  ${flexbar} -u 100 -n 8 -r ${input}/${Lane2_1_name} -t ${output}/temp/${Lane2_1_name} -x 23 -z GZ
+  ln -s ${input}/${Lane2_2} ${output}/temp/${Lane2_2}.fastq.gz
 
-                R2=$(echo $R1 | sed 's/_R1_/_R2_/')
-                echo $R1 $R2
-                ### Mapping
-                ${bwa} mem -t 8 -M -R "@RG\tID:$RGID\tSM:$SM\tPL:$PL\tLB:$LB\tPU:$PU" ${reference} ${output}/temp/$R1 ${output}/temp/$R2 | ${samtools} view -Sb - > ${output}/${Lane1_BAM}.bam
-        	#${bwa} mem -t 8 -M ${reference} ${output}/temp/${Lane2_1}.fastq.gz ${output}/temp/${Lane2_2}.fastq.gz | ${samtools} view -Sb - > ${output}/${Lane2_BAM}.bam
-	done
+  ## Step 2: mapping: hg38
+  ### Add Read group information
+  for R1 in ${Lane1_1}; do
+          SM=$(echo $R1 | cut -d"_" -f1)                                          ##sample ID
+          LB1=$(echo $R1 | cut -d"_" -f1,2)                                        ##library ID
+          PL="Illumina"                                                           ##platform (e.g. illumina, solid)
+          RGID=$(zcat $R1 | head -n1 | sed 's/:/_/g' |cut -d "_" -f1,2,3,4)       ##read group identifier
+          PU=$RGID.$LB                                                            ##Platform Unit
+          echo -e "@RG\tID:$RGID\tSM:$SM\tPL:$PL\tLB:$LB1\tPU:$PU"
+
+          R2=$(echo $R1 | sed 's/_R1_/_R2_/')
+          echo $R1 $R2
+
+          ### Mapping
+          ${bwa} mem -t 8 -M -R "@RG\tID:$RGID\tSM:$SM\tPL:$PL\tLB1:$LB\tPU:$PU" ${reference} ${output}/temp/$R1 ${output}/temp/$R2 | ${samtools} view -Sb - > ${output}/temp/${LB1}.bam
+          #${bwa} mem -t 8 -M ${reference} ${output}/temp/${Lane2_1}.fastq.gz ${output}/temp/${Lane2_2}.fastq.gz | ${samtools} view -Sb - > ${output}/${Lane2_BAM}.bam
+  done
+
+  for R1 in ${Lane2_1}; do
+          SM=$(echo $R1 | cut -d"_" -f1)                                          ##sample ID
+          LB2=$(echo $R1 | cut -d"_" -f1,2)                                        ##library ID
+          PL="Illumina"                                                           ##platform (e.g. illumina, solid)
+          RGID=$(zcat $R1 | head -n1 | sed 's/:/_/g' |cut -d "_" -f1,2,3,4)       ##read group identifier
+          PU=$RGID.$LB                                                            ##Platform Unit
+          echo -e "@RG\tID:$RGID\tSM:$SM\tPL:$PL\tLB:$LB2\tPU:$PU"
+
+          R2=$(echo $R1 | sed 's/_R1_/_R2_/')
+          echo $R1 $R2
+
+          ### Mapping
+          ${bwa} mem -t 8 -M -R "@RG\tID:$RGID\tSM:$SM\tPL:$PL\tLB2:$LB\tPU:$PU" ${reference} ${output}/temp/$R1 ${output}/temp/$R2 | ${samtools} view -Sb - > ${output}/temp/${LB2}.bam
+          #${bwa} mem -t 8 -M ${reference} ${output}/temp/${Lane2_1}.fastq.gz ${output}/temp/${Lane2_2}.fastq.gz | ${samtools} view -Sb - > ${output}/${Lane2_BAM}.bam
+  done
+
 else
         if [ ${lane} = 1 ]; then
                 echo "Note: There is one lane for this sample. Merging step (step 4) will be skipped."
         else
                 echo "Error: Wrong number of lanes (either one or two lanes). Please double check."
-	fi
+  fi
 fi
 
 # Post-alignment steps
 if [ ${lane} = 1 ]; then
-	## Step 3: Sorting
-	for i in ${Lane1_BAM}
-	do
-    	${samtools} sort -m 40G ${output}/$i.bam -o ${output}/${sample_ID}.sorted.bam
-	done
+  ## Step 3: Sorting
+  for i in ${LB}
+  do
+      ${samtools} sort -m 40G ${output}/temp/$i.bam -o ${output}/temp/${sample_ID}.sorted.bam
+  done
 
-	## Step 4: Merging (if no lane 2, no need to do merging)
-	## Skipped
+  ## Step 4: Merging (if no lane 2, no need to do merging)
+  ## Skipped
 
-	## Optional: Add read group here
-	#java -jar ${picard} AddOrReplaceReadGroups I=${output}/${sample_ID}.sorted.bam O=${output}/${sample_ID}.sorted.addRG.bam RGID=${sample_ID} RGLB=lib1 RGPL=illumina RGPU=unit1 RGSM=${sample_ID}
+  ## Optional: Add read group here
+  #java -jar ${picard} AddOrReplaceReadGroups I=${output}/${sample_ID}.sorted.bam O=${output}/${sample_ID}.sorted.addRG.bam RGID=${sample_ID} RGLB=lib1 RGPL=illumina RGPU=unit1 RGSM=${sample_ID}
 
-	## Step 5: Removing duplicates
-	java -jar -Djava.io.tmpdir=${output}/temp ${picard} MarkDuplicates I=${output}/${sample_ID}.sorted.bam O=${output}/${sample_ID}.sorted.marked_duplicates.bam M=${output}/marked_dup_metrics.txt REMOVE_DUPLICATES=true VALIDATION_STRINGENCY=STRICT
+  ## Step 5: Removing duplicates
+  java -jar -Djava.io.tmpdir=${output}/temp ${picard} MarkDuplicates I=${output}/temp/${sample_ID}.sorted.bam O=${output}/${sample_ID}.sorted.marked_duplicates.bam M=${output}/marked_dup_metrics.${sample_ID}.txt REMOVE_DUPLICATES=true VALIDATION_STRINGENCY=STRICT
 
-	## Step 6: Indexing
-	${samtools} index ${output}/${sample_ID}.sorted.marked_duplicates.bam
+  ## Step 6: Indexing
+  ${samtools} index ${output}/${sample_ID}.sorted.marked_duplicates.bam
+
 elif [ ${lane} = 2 ]; then
-	## Step 3: Sorting
-	for i in ${Lane1_BAM} ${Lane2_BAM} # if no Lane 2, comment out ${Lane2_BAM}
-	do
-    	${samtools} sort -m 40G ${output}/$i.bam -o ${output}/$i.sorted.bam
-	done
+  ## Step 3: Sorting
+  for i in ${LB1} ${LB2} 
+  do
+      ${samtools} sort -m 40G ${output}/temp/$i.bam -o ${output}/temp/$i.sorted.bam
+  done
 
-	## Step 4: Merging
-	${samtools} merge ${output}/${sample_ID}.sorted.bam ${output}/${Lane1_BAM}.sorted.bam ${output}/${Lane2_BAM}.sorted.bam
+  ## Step 4: Merging
+  ${samtools} merge ${output}/temp/${sample_ID}.sorted.bam ${output}/temp/${LB1}.sorted.bam ${output}/temp/${LB2}.sorted.bam
 
-	## Step 5: Removing duplicates
-	java -jar -Djava.io.tmpdir=${output}/temp ${picard} MarkDuplicates I=${output}/${sample_ID}.sorted.bam O=${output}/${sample_ID}.sorted.marked_duplicates.bam M=${output}/marked_dup_metrics.txt REMOVE_DUPLICATES=true VALIDATION_STRINGENCY=STRICT
+  ## Step 5: Removing duplicates
+  java -jar -Djava.io.tmpdir=${output}/temp ${picard} MarkDuplicates I=${output}/temp/${sample_ID}.sorted.bam O=${output}/${sample_ID}.sorted.marked_duplicates.bam M=${output}/marked_dup_metrics.${sample_ID}.txt REMOVE_DUPLICATES=true VALIDATION_STRINGENCY=STRICT
 
-	## Step 6: Indexing
-	${samtools} index ${output}/${sample_ID}.sorted.marked_duplicates.bam
+  ## Step 6: Indexing
+  ${samtools} index ${output}/${sample_ID}.sorted.marked_duplicates.bam
 else
-	echo "Note: Post-alignment steps were not processed due to wrong number of lanes."
+  echo "Note: Post-alignment steps were not processed due to wrong number of lanes."
 fi
 
 ## Step 7: Intermediate files removal
-#rm *.sorted.bam
-#rm -r ${output}/temp
+rm -r ${output}/temp
