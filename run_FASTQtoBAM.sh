@@ -188,5 +188,5 @@ else
   echo "Note: Post-alignment steps were not processed due to wrong number of lanes."
 fi
 
-## Step 7: Intermediate files removal
+## Step 7: Intermediate files removal (sorted BAM, etc)
 rm -r ${output}/temp
