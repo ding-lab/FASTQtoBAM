@@ -36,7 +36,7 @@ Update input data file datamap, and the the configuration file config.sh if need
 
 ### Run FASTQtoBAM
 ```sh
-nohup bash FASTQtoBAM_main.sh 1>sample_ID.err 2>sample_ID.log &
+nohup bash submit_FASTQtoBAM.sh 1>sample_ID.err 2>sample_ID.log &
 ```
 
 ## Steps
