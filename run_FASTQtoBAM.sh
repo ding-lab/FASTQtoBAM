@@ -163,8 +163,8 @@ if [ ${lane} = 1 ]; then
   ## Optional: Add read group here
   #java -jar ${picard} AddOrReplaceReadGroups I=${output}/${sample_ID}.sorted.bam O=${output}/${sample_ID}.sorted.addRG.bam RGID=${sample_ID} RGLB=lib1 RGPL=illumina RGPU=unit1 RGSM=${sample_ID}
 
-  ## Step 5: Removing duplicates
-  java -jar -Djava.io.tmpdir=${output}/temp ${picard} MarkDuplicates I=${output}/temp/${sample_ID}.sorted.bam O=${output}/${sample_ID}.sorted.marked_duplicates.bam M=${output}/marked_dup_metrics.${sample_ID}.txt REMOVE_DUPLICATES=true VALIDATION_STRINGENCY=STRICT
+  ## Step 5: Marking duplicates (--REMOVE_DUPLICATES. If true do not write duplicates to the output file instead of writing them with appropriate flags set)
+  java -jar -Djava.io.tmpdir=${output}/temp ${picard} MarkDuplicates I=${output}/temp/${sample_ID}.sorted.bam O=${output}/${sample_ID}.sorted.marked_duplicates.bam M=${output}/marked_dup_metrics.${sample_ID}.txt REMOVE_DUPLICATES=false VALIDATION_STRINGENCY=STRICT
 
   ## Step 6: Indexing
   ${samtools} index ${output}/${sample_ID}.sorted.marked_duplicates.bam
@@ -179,8 +179,8 @@ elif [ ${lane} = 2 ]; then
   ## Step 4: Merging
   ${samtools} merge ${output}/temp/${sample_ID}.sorted.bam ${output}/temp/${LB1}.sorted.bam ${output}/temp/${LB2}.sorted.bam
 
-  ## Step 5: Removing duplicates
-  java -jar -Djava.io.tmpdir=${output}/temp ${picard} MarkDuplicates I=${output}/temp/${sample_ID}.sorted.bam O=${output}/${sample_ID}.sorted.marked_duplicates.bam M=${output}/marked_dup_metrics.${sample_ID}.txt REMOVE_DUPLICATES=true VALIDATION_STRINGENCY=STRICT
+  ## Step 5: Marking duplicates (--REMOVE_DUPLICATES. If true do not write duplicates to the output file instead of writing them with appropriate flags set)
+  java -jar -Djava.io.tmpdir=${output}/temp ${picard} MarkDuplicates I=${output}/temp/${sample_ID}.sorted.bam O=${output}/${sample_ID}.sorted.marked_duplicates.bam M=${output}/marked_dup_metrics.${sample_ID}.txt REMOVE_DUPLICATES=false VALIDATION_STRINGENCY=STRICT
 
   ## Step 6: Indexing
   ${samtools} index ${output}/${sample_ID}.sorted.marked_duplicates.bam
